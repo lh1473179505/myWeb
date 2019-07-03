@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sjxy.myWeb.dao.UserMapper">
+<select id="login" parameterType="cn.sjxy.myWeb.domain.User" resultMap="loginMap">
+	select adminName,adminPwd 
+	from admin
+	where 
+	<if test="_parameter !=null">adminName=#{adminName}</if>
+	<if test="_parameter !=null">and adminPwd=#{adminPwd} </if>
+</select>
+<resultMap type="cn.sjxy.myWeb.domain.User" id="loginMap">
+	<result column="adminName" property="adminName"/>
+	<result column="adminPwd" property="adminPwd"/>
+</resultMap>
+
+<select id="findAllUser" resultType="cn.sjxy.myWeb.domain.User">
+	select * from admin
+</select>
+
+<insert id="addUser" parameterType="cn.sjxy.myWeb.domain.User" >
+	insert into admin(adminName,adminPwd,adminType,lastLoginTime)
+	values(#{adminName},#{adminPwd},1,null)
+</insert>
+
+<delete id="deleteUser" parameterType="int">
+	delete from admin where adminID=#{adminID}
+</delete>
+
+<update id="updateUser" parameterType="cn.sjxy.myWeb.domain.User" >
+	update admin set lastLoginTime=now() where adminName=#{adminName}
+</update>
+
+<select id="findById" parameterType="int" resultType="cn.sjxy.myWeb.domain.User">
+	select * from admin where adminID=#{adminID}
+</select>
+
+<select id="findByname" parameterType="String" resultType="cn.sjxy.myWeb.domain.User">
+	select * from admin where adminName=#{adminName}
+</select>
+</mapper>

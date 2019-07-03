@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.sjxy.myWeb.dao.NewsMapper">
+<select id="findAll" resultType="cn.sjxy.myWeb.domain.News">
+	select * from news 
+</select>
+
+<select id="findNews" parameterType="int" resultType="cn.sjxy.myWeb.domain.News">
+	select * from news where newsID=#{newsID}
+</select>
+
+<delete id="deleteNews" parameterType="int">
+	delete from news where newsID=#{newsID}
+</delete>
+
+<insert id="addNews" parameterType="cn.sjxy.myWeb.domain.News">
+	insert into news(newsTitle,newsContent,adminName,newsTime) 
+	values(#{newsTitle},#{newsContent},#{adminName},now())
+</insert>
+
+<update id="updateNews" parameterType="cn.sjxy.myWeb.domain.News">
+	update news set newsTitle=#{newsTitle},newsContent=#{newsContent} 
+	where newsID=#{newsID}
+</update>
+</mapper>
