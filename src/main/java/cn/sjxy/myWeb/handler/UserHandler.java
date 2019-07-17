@@ -5,6 +5,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,28 +35,60 @@ public class UserHandler {
 	}
 	
 	@RequestMapping(value="/login",method=RequestMethod.POST)
-	public String login(User user,HttpServletRequest request,HttpSession session) {
-		String msg="";
-		String adminName=request.getParameter("adminName");
-		String adminPwd=request.getParameter("adminPwd");
-		
-		user.setAdminName(adminName);
-		user.setAdminPwd(adminPwd);
-		User user1=userService.adminLogin(user);
-		if(user1==null) {
-			msg="用户名或密码错误";
-			 request.setAttribute("msg",msg);
-			 request.setAttribute("url","admin/login.jsp");
-			
-		}else {
-			msg="登录成功";
+	public String login(@RequestParam("adminName") String name,
+			@RequestParam("adminPwd") String password,
+			HttpServletRequest request,HttpSession session) {
+		Subject currentUser = SecurityUtils.getSubject();
+		 if (!currentUser.isAuthenticated()) {
+	        	// 把用户名和密码封装为 UsernamePasswordToken 对象
+			 System.out.println("name="+name+"==="+password);
+	            UsernamePasswordToken token = new UsernamePasswordToken(name, password);
+	           
+	            // 记住我的信息
+	            token.setRememberMe(true);
+	            try {
+	            	 //执行登录
+	            	System.out.println("1="+token.hashCode());
+	            	//调用login()方法，把token对象传到realm做校验和加密
+	                currentUser.login(token);
+	            } 
+	            // 所有认证时的异常的父类. 
+	            catch (AuthenticationException ae) {
+	                //unexpected condition?  error?
+	            	System.out.println("登录失败1"+ae.getMessage());
+	            }
+	        }
+		String msg="登录成功";
+		    User user0=new User();
+		    user0.setAdminName(name);
+		    user0.setAdminPwd(password);
+		 	User user1=userService.adminLogin(user0);
+		 	System.out.println("WO:"+user1.toString());
 			session.setAttribute("AdminName", user1.getAdminName());
 			userService.updateUser(user1);
 			 request.setAttribute("msg",msg);
 			 request.setAttribute("url","admin/includeAdmin.jsp");
-		}
-		return "forward/forward";
+			 return "forward/forward";
+		
 	}
+		
+//		user.setAdminName(adminName);
+//		user.setAdminPwd(adminPwd);
+//		User user1=userService.adminLogin(user);
+//		if(user1==null) {
+//			msg="用户名或密码错误";
+//			 request.setAttribute("msg",msg);
+//			 request.setAttribute("url","admin/login.jsp");
+//			
+//		}else {
+//			msg="登录成功";
+//			session.setAttribute("AdminName", user1.getAdminName());
+//			userService.updateUser(user1);
+//			 request.setAttribute("msg",msg);
+//			 request.setAttribute("url","admin/includeAdmin.jsp");
+//		}
+//		return "forward/forward";
+//	}
 	
 	@RequestMapping(value="/logout")
 	public  String logout(HttpServletRequest request,HttpSession session) {
@@ -72,9 +110,19 @@ public class UserHandler {
 	@RequestMapping(value="/addUser",method=RequestMethod.POST)
 	public String addUser(User user,HttpServletRequest request) {
 		String msg="";
-		if(userService.finadName(user.getAdminName()) != null) {
-			msg="用户名不能为空";
+		if(userService.findName(user.getAdminName()) != null) {
+			msg="用户已存在";
 		}else {
+			String password = request.getParameter("adminPwd");
+			String name = request.getParameter("adminName");
+			String algorithmName="Md5";
+			Object source=password;
+			Object salt=ByteSource.Util.bytes(name);
+			int hashIterations=1024;
+			
+			Object result=new SimpleHash(algorithmName, source, salt, hashIterations);
+			user.setAdminPwd(result.toString());
+			user.setAdminName(name);
 			userService.insertUser(user);
 			msg="添加成功!";
 		}

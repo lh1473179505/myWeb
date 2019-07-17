@@ -31,7 +31,7 @@ CREATE TABLE admin (
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO admin VALUES ('1', 'mr', 'mrsoft', '1', '2016-01-01');
+INSERT INTO admin VALUES ('2', 'cat', '65ce81405e5ad34c8dc84e9cf9601cb8', '1', now());
 
 -- ----------------------------
 -- Table structure for `news`

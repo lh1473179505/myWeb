@@ -19,4 +19,6 @@ public interface UserMapper {
 	public User findById(int adminID);
 	
 	public User findByname(String adminName);
+	
+	
 }

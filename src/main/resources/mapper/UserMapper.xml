@@ -8,7 +8,7 @@
 	from admin
 	where 
 	<if test="_parameter !=null">adminName=#{adminName}</if>
-	<if test="_parameter !=null">and adminPwd=#{adminPwd} </if>
+	
 </select>
 <resultMap type="cn.sjxy.myWeb.domain.User" id="loginMap">
 	<result column="adminName" property="adminName"/>

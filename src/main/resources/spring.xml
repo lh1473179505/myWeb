@@ -40,4 +40,59 @@
 			<property name="basePackage" value="cn.sjxy.myWeb.dao"/>
 			<property name="sqlSessionFactoryBeanName" value="sqlSession"/>
 		</bean>
+		
+		<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="realm" ref="jdbcRealm"/>
+    </bean>
+
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>
+    </bean>
+
+    <bean id="jdbcRealm" class="cn.sjxy.myWeb.realms.ShiroRealms"> 
+    	<property name="credentialsMatcher">
+    		<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+    			<property name="hashAlgorithmName" value="MD5"/>
+    			<property name="hashIterations" value="1024"/>
+    		</bean>
+    	</property>
+    </bean>
+
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor">
+          <property name="proxyTargetClass" value="true"/>
+    </bean>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/admin/login.jsp"/>
+        <property name="successUrl" value="/admin/includeAdmin.jsp"/>
+        <property name="unauthorizedUrl" value="/front/index.jsp"/>
+        <property name="filterChainDefinitions">
+            <value>
+            	/admin/login.jsp = anon
+            	/login = anon
+                /shiro/logout = logout
+                
+                # everything else requires authentication:
+                 /findAllUser = authc
+                 /addUser = authc
+                 /deleteUser = authc
+                 /deleteNews = authc
+                 /addNews = authc
+                  /update = authc
+                
+            </value>
+        </property>
+    </bean>
+    
+    
+	<aop:aspectj-autoproxy  proxy-target-class="true"/>
+	
 </beans>

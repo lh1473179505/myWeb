@@ -50,7 +50,7 @@ public class UserService {
 		return userMapper.findById(adminID);
 	}
 	
-	public User finadName(String adminName) {
+	public User findName(String adminName) {
 		return userMapper.findByname(adminName);
 	}
 }
