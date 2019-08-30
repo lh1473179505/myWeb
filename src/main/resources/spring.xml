@@ -76,17 +76,23 @@
         <property name="unauthorizedUrl" value="/front/index.jsp"/>
         <property name="filterChainDefinitions">
             <value>
-            	/admin/login.jsp = anon
-            	/login = anon
+
+
+
                 /shiro/logout = logout
                 
                 # everything else requires authentication:
-                 /findAllUser = authc
-                 /addUser = authc
-                 /deleteUser = authc
-                 /deleteNews = authc
-                 /addNews = authc
-                  /update = authc
+				/findAllUser = authc
+				/addUser = authc
+				/deleteUser = authc
+
+				/showAllNews = authc
+				/deleteNews = authc
+				/addNews = authc
+				/update = authc
+
+
+
                 
             </value>
         </property>

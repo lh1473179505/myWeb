@@ -132,7 +132,8 @@
 								</tbody>
 							</table>
 							<div style="text-align: center">
-								<img src="img/map.jpg" alt="">
+
+								<jsp:include page="ditu.jsp"></jsp:include>
 							</div>
 						</div>
 					</div>

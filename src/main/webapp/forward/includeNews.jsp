@@ -7,6 +7,6 @@
 <title>新闻</title>
 </head>
 <body>
-<jsp:include page="/front/newsFrontList.jsp"></jsp:include>
+<jsp:forward page="/front/newsFrontList.jsp"></jsp:forward>
 </body>
 </html>

@@ -19,14 +19,6 @@ public class NewsService {
 	@Autowired
 	private NewsMapper newsMapper;
 
-	public NewsMapper getNewsMapper() {
-		return newsMapper;
-	}
-
-	public void setNewsMapper(NewsMapper newsMapper) {
-		this.newsMapper = newsMapper;
-	}
-	
 	public List<News> findNews(){
 		return newsMapper.findAll();
 	}

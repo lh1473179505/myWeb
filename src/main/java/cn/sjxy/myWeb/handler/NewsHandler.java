@@ -21,14 +21,6 @@ public class NewsHandler {
 	@Autowired
 	private NewsService newsService;
 
-	public NewsService getNewsService() {
-		return newsService;
-	}
-
-	public void setNewsService(NewsService newsService) {
-		this.newsService = newsService;
-	}
-	
 	@RequestMapping(value="/findNews")
 	public String findAllNews(Map<String,Object>map) {
 		map.put("news", newsService.findNews());

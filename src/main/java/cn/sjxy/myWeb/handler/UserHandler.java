@@ -26,14 +26,6 @@ public class UserHandler {
 	@Autowired
 	private UserService userService;
 
-	public UserService getUserService() {
-		return userService;
-	}
-
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-	
 	@RequestMapping(value="/login",method=RequestMethod.POST)
 	public String login(@RequestParam("adminName") String name,
 			@RequestParam("adminPwd") String password,
@@ -41,14 +33,12 @@ public class UserHandler {
 		Subject currentUser = SecurityUtils.getSubject();
 		 if (!currentUser.isAuthenticated()) {
 	        	// 把用户名和密码封装为 UsernamePasswordToken 对象
-			 System.out.println("name="+name+"==="+password);
 	            UsernamePasswordToken token = new UsernamePasswordToken(name, password);
 	           
 	            // 记住我的信息
 	            token.setRememberMe(true);
 	            try {
 	            	 //执行登录
-	            	System.out.println("1="+token.hashCode());
 	            	//调用login()方法，把token对象传到realm做校验和加密
 	                currentUser.login(token);
 	            } 
@@ -63,8 +53,7 @@ public class UserHandler {
 		    user0.setAdminName(name);
 		    user0.setAdminPwd(password);
 		 	User user1=userService.adminLogin(user0);
-		 	System.out.println("WO:"+user1.toString());
-			session.setAttribute("AdminName", user1.getAdminName());
+			session.setAttribute("AdminName", name);
 			userService.updateUser(user1);
 			 request.setAttribute("msg",msg);
 			 request.setAttribute("url","admin/includeAdmin.jsp");
@@ -72,25 +61,7 @@ public class UserHandler {
 		
 	}
 		
-//		user.setAdminName(adminName);
-//		user.setAdminPwd(adminPwd);
-//		User user1=userService.adminLogin(user);
-//		if(user1==null) {
-//			msg="用户名或密码错误";
-//			 request.setAttribute("msg",msg);
-//			 request.setAttribute("url","admin/login.jsp");
-//			
-//		}else {
-//			msg="登录成功";
-//			session.setAttribute("AdminName", user1.getAdminName());
-//			userService.updateUser(user1);
-//			 request.setAttribute("msg",msg);
-//			 request.setAttribute("url","admin/includeAdmin.jsp");
-//		}
-//		return "forward/forward";
-//	}
-	
-	@RequestMapping(value="/logout")
+	//@RequestMapping(value="/logout")
 	public  String logout(HttpServletRequest request,HttpSession session) {
 		String msg="";
 		session.invalidate();
