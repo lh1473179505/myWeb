@@ -154,6 +154,6 @@ tabs("#tab", "active", "#tab_con");
 </script>
 
 	
-</script>
+
 
 </html>
